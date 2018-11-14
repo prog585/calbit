@@ -1,21 +1,33 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as firebase from 'firebase';
+import { createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Open up App.js to start working on your app!</Text>
-      </View>
-    );
-  }
-}
+// Create an ApiKeys.js file and export the config
+import config from './app/constants/ApiKeys';
+import LoginScreen from './app/screens/auths/LoginScreen';
+import AuthLoadingScreen from './app/screens/auths/AuthLoadingScreen';
+import Home from './app/screens/Home';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+firebase.initializeApp(config);
+
+const AppStack = createStackNavigator({
+  Home,
 });
+const AuthStack = createStackNavigator(
+  {
+    SignIn: LoginScreen,
+  },
+  {
+    headerMode: 'none',
+  }
+);
+
+export default createSwitchNavigator(
+  {
+    AuthLoading: AuthLoadingScreen,
+    App: AppStack,
+    Auth: AuthStack,
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  }
+);
